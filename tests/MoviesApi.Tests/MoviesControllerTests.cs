@@ -26,8 +26,8 @@ namespace MoviesApi.Tests
             // Arrange
             var movies = new List<Movie>
             {
-                new Movie { Id = 1, Title = "Test Movie 1" },
-                new Movie { Id = 2, Title = "Test Movie 2" }
+                new Movie { Id = 1, Title = "Test Movie 1", AverageRating = 4.5 },
+                new Movie { Id = 2, Title = "Test Movie 2", AverageRating = 3.0 }
             };
             _mockMovieService.Setup(service => service.GetAll()).Returns(movies);
 
@@ -38,6 +38,7 @@ namespace MoviesApi.Tests
             var actionResult = Assert.IsType<OkObjectResult>(result.Result);
             var model = Assert.IsAssignableFrom<IEnumerable<Movie>>(actionResult.Value);
             Assert.Equal(2, model.Count());
+            Assert.Equal(4.5, model.First().AverageRating);
         }
 
         [Fact]
@@ -59,7 +60,7 @@ namespace MoviesApi.Tests
         {
             // Arrange
             int testMovieId = 1;
-            var movie = new Movie { Id = testMovieId, Title = "Test Movie" };
+            var movie = new Movie { Id = testMovieId, Title = "Test Movie", AverageRating = 4.0 };
             _mockMovieService.Setup(service => service.GetById(testMovieId)).Returns(movie);
 
             // Act
@@ -69,6 +70,7 @@ namespace MoviesApi.Tests
             var actionResult = Assert.IsType<OkObjectResult>(result.Result);
             var model = Assert.IsType<Movie>(actionResult.Value);
             Assert.Equal(testMovieId, model.Id);
+            Assert.Equal(4.0, model.AverageRating);
         }
 
         [Fact]
@@ -76,7 +78,7 @@ namespace MoviesApi.Tests
         {
             // Arrange
             var createDto = new MovieCreateDto { Title = "New Movie" };
-            var createdMovie = new Movie { Id = 1, Title = "New Movie" };
+            var createdMovie = new Movie { Id = 1, Title = "New Movie", AverageRating = 0 };
             _mockMovieService.Setup(service => service.Create(createDto)).Returns(createdMovie);
 
             // Act
@@ -88,6 +90,7 @@ namespace MoviesApi.Tests
             Assert.Equal(createdMovie.Id, actionResult.RouteValues["id"]);
             var model = Assert.IsType<Movie>(actionResult.Value);
             Assert.Equal(createdMovie.Title, model.Title);
+            Assert.Equal(0, model.AverageRating);
         }
 
         [Fact]
@@ -96,7 +99,7 @@ namespace MoviesApi.Tests
             // Arrange
             int testMovieId = 1;
             var updateDto = new MovieUpdateDto { Title = "Updated Title" };
-            var existingMovie = new Movie { Id = testMovieId, Title = "Original Title" };
+            var existingMovie = new Movie { Id = testMovieId, Title = "Original Title", AverageRating = 3.5 };
             _mockMovieService.Setup(service => service.GetById(testMovieId)).Returns(existingMovie);
 
             // Act
@@ -112,7 +115,7 @@ namespace MoviesApi.Tests
         {
             // Arrange
             int testMovieId = 1;
-            var existingMovie = new Movie { Id = testMovieId, Title = "Test Movie" };
+            var existingMovie = new Movie { Id = testMovieId, Title = "Test Movie", AverageRating = 2.0 };
             _mockMovieService.Setup(service => service.GetById(testMovieId)).Returns(existingMovie);
 
             // Act
